@@ -1,0 +1,68 @@
+{% extends 'home/base.html' %}
+
+{% block title %}
+Blog Post page
+{% endblock title%}
+
+{% block blog_active %}
+active
+{% endblock blog_active %}
+
+{% block body%}
+{% load humanize%}
+
+<style>
+    .commenttime{
+    font-size: 12px;
+    padding: 8px;
+    }
+
+</style>
+
+
+
+<div class="container my-5">
+
+    <h2 class="blog-post-title">{{post.title}}</h2>
+    <p class="blog-post-meta">{{post.timestamp}}
+        <strong class="d-inline-block mb-2 text-primary">Article by {{post.author}}</strong>
+    </p>
+    <br>
+    <p>{{post.content|linebreaks}}</p>
+
+</div>
+<hr>
+<div class="container">
+    <h3>Comments ({{comments.count}})</h3>
+    {% if user.is_authenticated%}
+
+    <form action="/blog/postComment" method="post">
+        {%csrf_token%}
+        <input type="hidden" name="postSno" value="{{post.sno}}">
+        <div class="form-group">
+            <label for="exampleInputPostComment">Post your comment here</label>
+            <input type="text" class="form-control" id="comment" name="comment" placeholder="enter your comment here">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    {%else%}
+    <p class="my-4">Please login to post a comment...</p>
+    {% endif %}
+
+    {% for comment in comments%}
+    <div class="row my-3 ">
+        <div class="col-md-1 ">
+            {% load static%}
+        <img class="rounded mx-auto d-block w-100 p-2 img-fluid" src= "{% static 'blog/img/user.png' %}" alt="user">
+        </div>
+        <div class="col-md-11 ">
+            <b> {{comment.user.username}}</b>  <span class="commenttime">{{comment.timestamp | naturaltime}}</span>
+            <div>{{comment.comment}}</div>
+        </div>
+    </div>
+
+
+    {% endfor%}
+
+
+{% endblock body %}

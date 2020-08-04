@@ -15,14 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-admin.site.site_header = "MyBlog Admin"
-admin.site.site_title = "MyBlog Admin Panel"
-admin.site.index_title = "Welcome to MyBlog Admin panel"
-
-
+from . import views
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('home.urls')),
-    path('blog', include('blog.urls')),
+     path('', views.home, name='home'),
+     path('about', views.about, name='about'),
+     path('contact', views.contact, name='contact'),
+     path('search', views.search, name='search'),
+     path('signUp', views.handleSignUp, name='signUp'),
+     path('Login', views.handleLogin, name='handleLogin'),
+     path('Logout', views.handleLogout, name='handleLogin'),
 
 ]

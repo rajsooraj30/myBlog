@@ -1,0 +1,48 @@
+{% extends 'home/base.html' %}
+
+{% block title %}
+Contact page
+{% endblock title%}
+
+{% block contact_active %}
+active
+{% endblock contact_active %}
+
+{% block body%}
+{% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <strong>Message: </strong> {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+
+<div class="container my-3">
+
+    <h3>Contact blogname Admin</h3>
+    <form class="my-3" method="post" action="/contact"> {% csrf_token %}
+        <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" aria-describedby="name" name="name" required>
+  </div>
+  <div class="form-group">
+    <label for="email">Email address</label>
+    <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email" required>
+    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  </div>
+    <div class="form-group">
+    <label for="phone">Phone Number</label>
+    <input type="phone" class="form-control" id="phone" aria-describedby="phoneHelp" name="phone" required>
+    <small id="phoneHelp" class="form-text text-muted">We'll never share your phone no with anyone else.</small>
+  </div>
+
+  <div class="form-group">
+    <label for="description">Describe your issue:</label>
+    <textarea class="form-control" id="description" rows="3" name="description" required></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+</div>
+{% endblock body %}

@@ -1,0 +1,41 @@
+﻿{% extends 'home/base.html' %}
+
+{% block title %}
+Blog Home page
+{% endblock title%}
+
+{% block js%}
+<!-- Getting the inner html texts
+<script>
+    let previews= document.getElementsByClassName('preview');
+    Array.from(previews).forEach((element)=>{
+    element.innerHTML = element.innerText;
+    })
+
+</script>
+-->
+
+{% endblock js%}
+
+
+
+{% block blog_active %}
+active
+{% endblock blog_active %}
+
+{% block body%}
+<div class="container my-5">
+{% for post in allPosts %}
+<div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative my-4">
+        <div class="col p-4 d-flex flex-column position-static">
+          <strong class="d-block mb-3 text-primary">Article by {{post.author}}  <span class="font-weight-normal text-dark"> ({{post.views}} views) </span></strong>
+          <h3 class="mb-0">{{post.title}}</h3>
+          <div class="mb-1 text-muted">{{post.timestamp}}</div>
+            <p class="card-text mb-auto"><div class="preview">{{post.displayContent|truncatechars:200}}</div></p>
+          <a href="/blog/{{post.slug}}" class="stretched-link">Continue reading</a>
+        </div>
+
+      </div>
+{% endfor %}
+</div>
+{% endblock body %}

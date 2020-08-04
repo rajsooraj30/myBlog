@@ -1,0 +1,133 @@
+{% extends 'home/base.html' %}
+
+{% block title %}
+Blog Post page
+{% endblock title%}
+
+
+
+
+
+
+
+{% block blog_active %}
+active
+{% endblock blog_active %}
+
+{% block body%}
+{% load humanize%}
+{% load extras%}
+
+
+
+
+
+<style>
+    .commenttime{
+    font-size: 12px;
+    padding: 8px;
+    }
+
+</style>
+
+
+
+<div class="container my-5">
+
+    <h2 class="blog-post-title">{{post.title}}</h2>
+    <p class="blog-post-meta">{{post.timestamp}}
+        <strong class="d-inline-block mb-2 text-primary">Article by {{post.author}}  </strong> (<span>{{post.views}} views</span>)
+    </p>
+    <br>
+    <p>{{post.content|safe}}</p>
+
+</div>
+<hr>
+<div class="container">
+    <h3>Comments ({{comments.count}})</h3>
+    {% if user.is_authenticated%}
+
+    <form action="/blog/postComment" method="post">
+        {%csrf_token%}
+        <input type="hidden" name="postSno" value="{{post.sno}}">
+        <input type="hidden" name="parentSno" value="">
+        <div class="form-group">
+            <label for="comment">Post your comment here</label>
+            <input type="text" class="form-control" id="comment" name="comment" placeholder="enter your comment here">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    {%else%}
+    <p class="my-4">Please login to post a comment...</p>
+    {% endif %}
+
+    {% for comment in comments%}
+
+    <div class="media my-3">
+        {% load static%}
+        <img class="mr-4 mt-0 img-fluid " src="{% static 'blog/img/user.png' %}" alt="user" style="width: 30px;height: auto;">
+        <div class="media-body">
+            <h5 class="mt-0">{{comment.user.username}} <span class="commenttime">{{comment.timestamp | naturaltime}}</span></h5>
+            <div >{{comment.comment}}</div>
+
+            {%if user.is_authenticated%}
+                <p>
+                <a class="text-dark" style="font-size: 12px;" data-toggle="collapse"  data-target="#replyBox{{comment.sno}}" href="#replyBox{{comment.sno}}" role="button"
+                   aria-expanded="false" aria-controls="replyBox{{comment.sno}}">
+                    <b>REPLY</b>
+                </a>
+                </p>
+
+            <div class="collapse" id="replyBox{{comment.sno}}">
+                <div class="card card-body ">
+                    <form action="/blog/postComment" method="post">
+                        {%csrf_token%}
+                        <input type="hidden" name="postSno" value="{{post.sno}}">
+                        <div class="form-group">
+                            <label for="replyComment">Post your reply here</label>
+                            <input type="text" class="form-control" id="replyComment" name="comment"
+                                   placeholder="enter your comment here">
+                            <input type="hidden" name="parentSno" value="{{comment.sno}}">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+
+                    </form>
+
+                </div>
+            </div>
+            {% else %}
+            <p>
+                <a class="text-dark" style="font-size: 12px;" data-toggle="modal" data-target="#LoginModal"  role="button"
+                   aria-expanded="false" >
+                    <b> LOGIN TO REPLY</b>
+                </a>
+                </p>
+
+            {%endif%}
+
+
+            {%for reply in replyDict|get_val:comment.sno%}
+        <div class="media my-2">
+            {% load static%}
+            <img class="mr-4 mt-0 img-fluid " style="width: 25px;height: auto;" src="{% static 'blog/img/user.png' %}" alt="user">
+            <div class="media-body">
+
+                <h5 class="mt-0">{{reply.user.username}} <span
+                        class="commenttime">{{reply.timestamp | naturaltime}}</span></h5>
+                {{reply.comment}}
+
+            </div>
+
+        </div>
+        {% endfor%}
+
+
+            </div>
+
+    </div>
+
+
+    {% endfor%}
+
+
+{% endblock body %}
